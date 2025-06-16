@@ -1,4 +1,5 @@
-print("""
+print(
+    """
 Caio Simonassi e Lucas Corrêa
 Grupo 5
 
@@ -8,7 +9,9 @@ simular uma compra e ver detalhes de pedidos. O sistema pode incluir carrinho e 
 estoque básico.
 
 LOJA DE CAMISETAS
-""")
+"""
+)
+
 
 # classe produto com atributos privados e getters e setters para os atributos necessarios
 class Produto:
@@ -30,10 +33,12 @@ class Produto:
 
     def get_preco(self):
         return self.__preco
+
     def set_estoque(self, quantidade):
         self.__estoque += quantidade
 
-#classe pai usuario
+
+# classe pai usuario
 class Usuario:
     def __init__(self, nome, telefone):
         self.__nome = nome
@@ -49,6 +54,7 @@ class Usuario:
     def get_nome(self):
         return f"NOME: {self.__nome} | TEL: {self.__telefone}"
 
+
 # classe vendedor que herda de Usuario
 class Vendedor(Usuario):
     def __init__(self, id_vendedor, nome, telefone, salario):
@@ -58,6 +64,7 @@ class Vendedor(Usuario):
 
     def get_id(self):
         return self.id_vendedor
+
 
 # classe cliente que Herda de usuario tambem, e tem o carrinho e os pedidos feitos pelo usuario
 class Cliente(Usuario):
@@ -76,6 +83,7 @@ class Cliente(Usuario):
 
     def get_pedido(self):
         return self.pedidos
+
 
 # classe sistema que gerencia e acessa as outras classes
 class Sistema:
@@ -155,7 +163,8 @@ class Sistema:
         for cliente in self.clientes:
             if cliente.get_cpf() == cpf:
                 print("Produto | Preco | Quantidade")
-                print(cliente.get_carrinho())
+                for item in cliente.get_carrinho():
+                    print(item)
 
     def finaliza_compra(self, cpf):
         for cliente in self.clientes:
@@ -168,40 +177,44 @@ class Sistema:
         for cliente in self.clientes:
             if cliente.get_cpf() == cpf:
                 print(f"Pedidos:")
-                print(f"Produto | Preco | Quantidade\n  {cliente.get_pedido()}")
+                print(f"Produto | Preco | Quantidade")
+                for pedido in cliente.get_pedido():
+                    print(pedido)
 
 
 sys = Sistema()
 
 # cadastro dos clientes
 sys.cadastrar_cliente("Caio", "12345678910", "0987654321", "caio.cliente@loja.com")
-sys.cadastrar_cliente("Gustavo", "13256767578", "12435697867", "gustavo.cliente@loja.com")
+sys.cadastrar_cliente(
+    "Gustavo", "13256767578", "12435697867", "gustavo.cliente@loja.com"
+)
 
-#cadastra os vendedores
+# cadastra os vendedores
 sys.cadastrar_vendedor(1, "Lucas", "97534031", 2000)
 sys.cadastrar_vendedor(2, "Pedro", "454543244312", 1999)
 
-#cadastra produtos
+# cadastra produtos
 sys.cadastrar_produto(1, "Camiseta Adidas", "Preta", 99.99, 5)
 sys.cadastrar_produto(2, "Camiseta Nike", "Roxo", 139.99, 7)
 
-#listagem das classes
+# listagem das classes
 sys.listar_clientes()
 sys.listar_vendedores()
 sys.listar_produtos()
 
-#adiciona produtos ao estoque
+# adiciona produtos ao estoque
 sys.adiciona_estoque(1, 20)
 
 sys.listar_produtos()
 
-#adiciona produtos ao carrinho e remove da quantidade do estoque
+# adiciona produtos ao carrinho e remove da quantidade do estoque
 sys.adiciona_carrinho("12345678910", 2, -1)
 sys.adiciona_carrinho("12345678910", 1, -3)
 sys.ver_carrinho("12345678910")
 
 sys.listar_produtos()
 
-#finaliza a compra, adiciona os items para os pedidos e apaga o carrinho
+# finaliza a compra, adiciona os items para os pedidos e apaga o carrinho
 sys.finaliza_compra("12345678910")
 sys.ver_pedidos("12345678910")
