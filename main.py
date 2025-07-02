@@ -15,6 +15,14 @@ ver detalhes de pedidos. O sistema pode incluir carrinho e controle de estoque b
 )
 
 
+class ListagemProdutosErro(Exception):
+    pass
+
+
+class FaltaEstoqueErro(Exception):
+    pass
+
+
 # classe produto com atributos privados e getters e setters para os atributos necessarios
 class Produto(ABC):
     def __init__(self, codigo, nome, preco, estoque):
@@ -29,7 +37,7 @@ class Produto(ABC):
 
 
 class Camiseta(Produto):
-    def __init__(self, codigo, nome, preco, estoque, cor, tamanho):
+    def __init__(self, codigo, nome, cor, tamanho, preco, estoque):
         super().__init__(codigo, nome, preco, estoque)
         self.cor = cor
         self.tamanho = tamanho
@@ -39,8 +47,8 @@ class Camiseta(Produto):
 
 
 class Blusa(Produto):
-    def __init__(self, codigo, nome, preco, estoque, cor, tamanho):
-        super().__init__(codigo, nome, cor, preco, estoque)
+    def __init__(self, codigo, nome, cor, tamanho, preco, estoque):
+        super().__init__(codigo, nome, preco, estoque)
         self.cor = cor
         self.tamanho = tamanho
 
@@ -68,18 +76,43 @@ class Vendedor(Usuario):
     def tipo(self):
         return "Vendedor"
 
-    def cadastrar_produto(self, codigo, nome, cor, preco, estoque):
+    def cadastrar_camiseta(self, codigo, nome, cor, tamanho, preco, estoque):
+        print("Cadastrando camiseta...")
         try:
-            new = Camiseta(codigo, nome, cor, preco, estoque)
+            new = Camiseta(codigo, nome, cor, tamanho, preco, estoque)
             self.produtos.append(new)
-            print("Produto cadastrado!")
-        except Exception:
-            print(f"Erro ao cadastrar produto: {Exception}")
+            print(" Produto cadastrado! ".center(64, "="))
+        except Exception as erro:
+            print(f"Erro ao cadastrar produto: {erro}")
+        print("\n")
+
+    def cadastrar_blusa(self, codigo, nome, cor, tamanho, preco, estoque):
+        print("Cadastrando blusa...")
+        try:
+            new = Blusa(codigo, nome, cor, tamanho, preco, estoque)
+            self.produtos.append(new)
+            print(" Produto cadastrado! ".center(64, "="))
+        except Exception as erro:
+            print(f"Erro ao cadastrar produto: {erro}")
+        print("\n")
 
     def listar_produtos(self):
         for produto in self.produtos:
-            pass
-            # TODO: Terminar isso aqui
+            if isinstance(produto, Camiseta):
+                print(" Camisetas ".center(64, "="))
+                print(f"Código: {produto._codigo}")
+                print(
+                    f"\tNome: {produto._nome}\n\tCor: {produto.cor}\n\tTamanho: {produto.tamanho}\n\tPreço: {produto._preco}\n\tEstoque: {produto._estoque}\n\n"
+                )
+            elif isinstance(produto, Blusa):
+                print(" Blusas ".center(64, "="))
+                print(f"Código: {produto._codigo}")
+                print(
+                    f"\tNome: {produto._nome}\n\tCor: {produto.cor}\n\tTamanho: {produto.tamanho}\n\tPreço: {produto._preco}\n\tEstoque: {produto._estoque}\n\n"
+                )
+            else:
+                raise ListagemProdutosErro("Erro ao listar os produtos do vendedor")
+        print("\n")
 
 
 # classe cliente que Herda de usuario tambem, e tem o carrinho e os pedidos feitos pelo usuario
@@ -114,3 +147,12 @@ class Sistema:
         pass
 
     # TODO: Fazer um menu, com as opcoes de entrar como vendedor ou cliente, com suas respectivas opcoes ( ou nao )
+
+
+# teste de vendedor
+vendedor = Vendedor(1, "Caio")
+
+vendedor.cadastrar_camiseta(1, "Camiseta Rock", "Preto", "M", 109.99, 8)
+vendedor.cadastrar_blusa(1, "Blusa Rock", "Preto", "M", 109.99, 8)
+
+vendedor.listar_produtos()
